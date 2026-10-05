@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCI-MTN-CORE | موتور هوشمند پردازش کانفیگ‌های ایران</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #070d19;
+            --card-bg: rgba(13, 25, 48, 0.7);
+            --card-border: rgba(0, 242, 254, 0.2);
+            --cyan-glow: #00f2fe;
+            --blue-glow: #4facfe;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-green: #10b981;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, system-ui, sans-serif; }
+        body { background: var(--bg-dark); color: var(--text-main); min-height: 100vh; overflow-x: hidden; position: relative; }
+
+        body::before {
+            content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%);
+            width: 800px; height: 600px; background: radial-gradient(circle, rgba(0, 242, 254, 0.12) 0%, rgba(79, 172, 254, 0.05) 50%, transparent 70%);
+            z-index: 0; pointer-events: none;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 25px 20px; position: relative; z-index: 1; }
+
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 15px; }
+        .tags-badge { display: flex; gap: 15px; font-size: 13px; color: var(--cyan-glow); }
+        .tags-badge span { display: flex; align-items: center; gap: 5px; }
+
+        .lang-btn {
+            background: rgba(0, 242, 254, 0.1); border: 1px solid var(--cyan-glow); color: var(--cyan-glow);
+            padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: bold;
+            transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;
+        }
+        .lang-btn:hover { background: var(--cyan-glow); color: var(--bg-dark); box-shadow: 0 0 15px var(--cyan-glow); }
+
+        .hero { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 40px; margin-bottom: 40px; }
+        .hero-left { flex: 1 1 500px; }
+        .logo-title-box { display: flex; align-items: center; gap: 20px; margin-bottom: 15px; }
+        .hex-logo {
+            width: 70px; height: 70px; background: linear-gradient(135deg, var(--cyan-glow), var(--blue-glow));
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex; justify-content: center; align-items: center; font-size: 32px; color: var(--bg-dark);
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.5);
+        }
+        .hero-title h1 { font-size: 36px; font-weight: 800; letter-spacing: 1px; color: #fff; text-shadow: 0 0 20px rgba(0, 242, 254, 0.3); }
+        .hero-title p { color: var(--cyan-glow); font-size: 15px; letter-spacing: 0.5px; }
+
+        .pipeline-tags { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; color: var(--text-muted); font-size: 13px; }
+        .pipeline-tags span { background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); }
+
+        .hero-desc { color: #cbd5e1; font-size: 14px; line-height: 1.8; margin-bottom: 20px; }
+
+        .hero-right { flex: 1 1 400px; display: flex; justify-content: center; }
+        .live-card {
+            width: 100%; max-width: 420px; background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 16px; padding: 25px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative; overflow: hidden;
+        }
+        .live-card::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--cyan-glow), var(--blue-glow));
+        }
+        .card-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; font-family: monospace; }
+        .status-pill { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); padding: 2px 10px; border-radius: 12px; border: 1px solid var(--accent-green); font-size: 11px; }
+
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .feat-box {
+            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px;
+            padding: 20px 15px; text-align: center; transition: all 0.3s ease; backdrop-filter: blur(5px);
+        }
+        .feat-box:hover { transform: translateY(-5px); border-color: var(--cyan-glow); box-shadow: 0 5px 20px rgba(0, 242, 254, 0.2); }
+        .feat-box i { font-size: 26px; color: var(--cyan-glow); margin-bottom: 12px; }
+        .feat-box h4 { font-size: 14px; margin-bottom: 6px; color: #fff; }
+        .feat-box p { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+
+        .protocols-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-bottom: 40px; }
+        .proto-badge {
+            background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(0, 242, 254, 0.3); padding: 8px 18px;
+            border-radius: 30px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+            color: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+        .proto-badge.vless { border-color: #10b981; color: #10b981; }
+        .proto-badge.trojan { border-color: #f59e0b; color: #f59e0b; }
+        .proto-badge.hysteria { border-color: #ec4899; color: #ec4899; }
+        .proto-badge.fastly { border-color: #3b82f6; color: #60a5fa; }
+
+        .telegram-cta {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(30, 58, 138, 0.3));
+            border: 1px solid rgba(14, 165, 233, 0.4); border-radius: 20px; padding: 25px 30px;
+            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;
+            margin-bottom: 30px; box-shadow: 0 0 30px rgba(14, 165, 233, 0.2);
+        }
+        .tg-info h3 { font-size: 20px; color: #fff; margin-bottom: 5px; }
+        .tg-info p { color: #93c5fd; font-size: 13px; }
+        .tg-btns { display: flex; gap: 15px; flex-wrap: wrap; }
+        .btn-tg {
+            background: linear-gradient(135deg, #0ea5e9, #2563eb); color: #fff; text-decoration: none;
+            padding: 12px 28px; border-radius: 30px; font-weight: bold; font-size: 14px;
+            display: flex; align-items: center; gap: 10px; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(14, 165, 233, 0.5);
+        }
+        .btn-tg:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(14, 165, 233, 0.8); }
+        .btn-group {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: #fff;
+            text-decoration: none; padding: 12px 24px; border-radius: 30px; font-size: 14px;
+            display: flex; align-items: center; gap: 8px; transition: all 0.3s;
+        }
+        .btn-group:hover { background: rgba(255,255,255,0.15); }
+
+        footer { text-align: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; color: var(--text-muted); font-size: 12px; }
+
+        @media (max-width: 768px) {
+            .hero-title h1 { font-size: 28px; }
+            .telegram-cta { text-align: center; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <div class="tags-badge">
+            <span><i class="fab fa-github"></i> <span id="t-opensource">هسته خصوصی</span></span>
+            <span>•</span>
+            <span><i class="fas fa-bolt"></i> <span id="t-free">اتوماسیون ۲۴ ساعته</span></span>
+            <span>•</span>
+            <span><i class="fas fa-shield-alt"></i> <span id="t-free-net">اینترنت آزاد</span></span>
+        </div>
+        <button class="lang-btn" onclick="toggleLanguage()">
+            <i class="fas fa-globe"></i> <span id="lang-text">English</span>
+        </button>
+    </div>
+
+    <div class="hero">
+        <div class="hero-left">
+            <div class="logo-title-box">
+                <div class="hex-logo"><i class="fas fa-shield-halved"></i></div>
+                <div class="hero-title">
+                    <h1>mci-mtn-core</h1>
+                    <p id="t-subtitle">Dual Carrier Configuration Intelligence</p>
+                </div>
+            </div>
+
+            <div class="pipeline-tags">
+                <span id="t-step1">دریافت</span> ➔ 
+                <span id="t-step2">پارس</span> ➔ 
+                <span id="t-step3">DoH دی‌ان‌اس</span> ➔ 
+                <span id="t-step4">فستلی و ریالیتی</span> ➔ 
+                <span id="t-step5">ارسال خودکار</span>
+            </div>
+
+            <p class="hero-desc" id="t-desc">
+                موتور فوق‌پیشرفته و خودکار برای جمع‌آوری، تفکیک هوشمند، سنجش پایداری و استخراج بهترین سرورهای بدون فیلتر شبکه همراه اول و ایرانسل با کمترین تاخیر زمانی (پینگ زیر ۲۰ میلی‌ثانیه).
+            </p>
+        </div>
+
+        <div class="hero-right">
+            <div class="live-card">
+                <div class="card-row">
+                    <span style="color:var(--text-muted);">Core Pipeline:</span>
+                    <span class="status-pill"><i class="fas fa-circle" style="font-size: 8px;"></i> LIVE</span>
+                </div>
+                <div class="card-row"><span>Target Operators:</span><span style="color:var(--cyan-glow);">MCI (Fastly) & Irancell</span></div>
+                <div class="card-row"><span>Security Layers:</span><span style="color:#a855f7;">REALITY / TLS 1.3 / WS</span></div>
+                <div class="card-row"><span>Fastly Anycast Ping:</span><span style="color:var(--accent-green); font-weight:bold;">3ms ~ 18ms</span></div>
+                <div class="card-row"><span>Active Sources:</span><span>14 Modular Files</span></div>
+                <div class="card-row"><span>Anti-Censorship:</span><span style="color:#60a5fa;">DoH + Clean IP Engine</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="protocols-bar">
+        <div class="proto-badge fastly"><i class="fas fa-bolt"></i> Fastly Anycast</div>
+        <div class="proto-badge vless"><i class="fas fa-lock"></i> VLESS Reality</div>
+        <div class="proto-badge trojan"><i class="fas fa-shield-virus"></i> Trojan Direct</div>
+        <div class="proto-badge"><i class="fas fa-cube"></i> VMess WS</div>
+        <div class="proto-badge hysteria"><i class="fas fa-rocket"></i> Hysteria 2</div>
+        <div class="proto-badge"><i class="fas fa-globe"></i> Shadowsocks</div>
+    </div>
+
+    <div class="features-grid">
+        <div class="feat-box">
+            <i class="fas fa-layer-group"></i>
+            <h4 id="f1-title">14 سورس تفکیک‌شده</h4>
+            <p id="f1-desc">پردازش نوبتی و ضد هنگ منابع بدون فشار به حافظه.</p>
+        </div>
+        <div class="feat-box">
+            <i class="fas fa-filter"></i>
+            <h4 id="f2-title">پالایش هوشمند</h4>
+            <p id="f2-desc">حذف ۱۰۰٪ کانفیگ‌های تکراری و پاکسازی اسپم‌ها.</p>
+        </div>
+        <div class="feat-box">
+            <i class="fas fa-network-wired"></i>
+            <h4 id="f3-title">موتور اختصاصی MCI</h4>
+            <p id="f3-desc">شکار سرورهای شبکه Fastly با پورت طلایی ۴۴۳.</p>
+        </div>
+        <div class="feat-box">
+            <i class="fas fa-tachometer-alt"></i>
+            <h4 id="f4-title">پینگ واقعی زیر ۲۰ms</h4>
+            <p id="f4-desc">تست دقیق بدون پکت‌لاس و بالاترین پایداری.</p>
+        </div>
+        <div class="feat-box">
+            <i class="fas fa-map-marked-alt"></i>
+            <h4 id="f5-title">تفکیک ۱۵ شهر ایران</h4>
+            <p id="f5-desc">دسته‌بندی خودکار شهرها و پرچم کشورها.</p>
+        </div>
+        <div class="feat-box">
+            <i class="fas fa-qrcode"></i>
+            <h4 id="f6-title">بارکد QR و کلش</h4>
+            <p id="f6-desc">تولید خودکار صفحه qrcode.html و Clash Meta.</p>
+        </div>
+    </div>
+
+    <div class="telegram-cta">
+        <div class="tg-info">
+            <h3 id="tg-title">عضویت در کانال رسمی تلگرام</h3>
+            <p id="tg-desc">دریافت لحظه‌ای و خودکار آخرین کانفیگ‌های تست‌شده و پرسرعت</p>
+        </div>
+        <div class="tg-btns">
+            <a href="https://t.me/Goodbaye_filtering" target="_blank" class="btn-tg">
+                <i class="fab fa-telegram-plane"></i> @Goodbaye_filtering
+            </a>
+            <a href="https://t.me/CONFIG_V2RAY_VIP" target="_blank" class="btn-group">
+                <i class="fas fa-users"></i> <span id="t-group">سوپرگروه VIP</span>
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <p id="t-footer">🕊 اینترنت آزاد، امن و بدون سانسور حق مسلم همه انسان‌هاست | پروژه اختصاصی mci-mtn-core</p>
+    </footer>
+</div>
+
+<script>
+    let currentLang = 'fa';
+
+    const langData = {
+        fa: {
+            langBtn: 'English',
+            opensource: 'هسته خصوصی',
+            free: 'اتوماسیون ۲۴ ساعته',
+            freeNet: 'اینترنت آزاد',
+            subtitle: 'Dual Carrier Configuration Intelligence',
+            step1: 'دریافت', step2: 'پارس', step3: 'DoH دی‌ان‌اس', step4: 'فستلی و ریالیتی', step5: 'ارسال خودکار',
+            desc: 'موتور فوق‌پیشرفته و خودکار برای جمع‌آوری، تفکیک هوشمند، سنجش پایداری و استخراج بهترین سرورهای بدون فیلتر شبکه همراه اول و ایرانسل با کمترین تاخیر زمانی (پینگ زیر ۲۰ میلی‌ثانیه).',
+            f1T: '14 سورس تفکیک‌شده', f1D: 'پردازش نوبتی و ضد هنگ منابع بدون فشار به حافظه.',
+            f2T: 'پالایش هوشمند', f2D: 'حذف ۱۰۰٪ کانفیگ‌های تکراری و پاکسازی اسپم‌ها.',
+            f3T: 'موتور اختصاصی MCI', f3D: 'شکار سرورهای شبکه Fastly با پورت طلایی ۴۴۳.',
+            f4T: 'پینگ واقعی زیر ۲۰ms', f4D: 'تست دقیق بدون پکت‌لاس و بالاترین پایداری.',
+            f5T: 'تفکیک ۱۵ شهر ایران', f5D: 'دسته‌بندی خودکار شهرها و پرچم کشورها.',
+            f6T: 'بارکد QR و کلش', f6D: 'تولید خودکار صفحه qrcode.html و Clash Meta.',
+            tgTitle: 'عضویت در کانال رسمی تلگرام', tgDesc: 'دریافت لحظه‌ای و خودکار آخرین کانفیگ‌های تست‌شده و پرسرعت',
+            group: 'سوپرگروه VIP',
+            footer: '🕊 اینترنت آزاد، امن و بدون سانسور حق مسلم همه انسان‌هاست | پروژه اختصاصی mci-mtn-core'
+        },
+        en: {
+            langBtn: 'فارسی',
+            opensource: 'Private Core',
+            free: '24/7 Automated',
+            freeNet: 'Free Internet',
+            subtitle: 'Dual Carrier Configuration Intelligence',
+            step1: 'Collect', step2: 'Parse', step3: 'DoH DNS', step4: 'Fastly & Reality', step5: 'Auto-Post',
+            desc: 'Ultra-advanced automated engine for collecting, analyzing, stability testing, and extracting unblocked servers for MCI & Irancell carriers with ultra-low latency (<20ms).',
+            f1T: '14 Modular Sources', f1D: 'Sequential memory-safe processing without system load.',
+            f2T: 'Smart Filtering', f2D: '100% duplicate removal and spam name sanitization.',
+            f3T: 'MCI Dedicated Engine', f3D: 'Hunting Fastly Anycast nodes on golden port 443.',
+            f4T: 'Real Ping < 20ms', f4D: 'Strict zero-loss connectivity and top stability test.',
+            f5T: '15 Iran Cities Mapping', f5D: 'Automated geo-mapping and country flags categorization.',
+            f6T: 'QR Codes & Clash', f6D: 'Instant qrcode.html camera scan and Clash Meta generator.',
+            tgTitle: 'Join Our Official Telegram Channel', tgDesc: 'Receive live, verified, ultra-high-speed configs directly.',
+            group: 'VIP Community',
+            footer: '🕊 Free, secure and open internet is a fundamental right | Dedicated mci-mtn-core Project'
+        }
+    };
+
+    function toggleLanguage() {
+        currentLang = currentLang === 'fa' ? 'en' : 'fa';
+        document.documentElement.lang = currentLang;
+        document.documentElement.dir = currentLang === 'fa' ? 'rtl' : 'ltr';
+
+        const d = langData[currentLang];
+        document.getElementById('lang-text').innerText = d.langBtn;
+        document.getElementById('t-opensource').innerText = d.opensource;
+        document.getElementById('t-free').innerText = d.free;
+        document.getElementById('t-free-net').innerText = d.freeNet;
+        document.getElementById('t-subtitle').innerText = d.subtitle;
+        document.getElementById('t-step1').innerText = d.step1;
+        document.getElementById('t-step2').innerText = d.step2;
+        document.getElementById('t-step3').innerText = d.step3;
+        document.getElementById('t-step4').innerText = d.step4;
+        document.getElementById('t-step5').innerText = d.step5;
+        document.getElementById('t-desc').innerText = d.desc;
+
+        document.getElementById('f1-title').innerText = d.f1T; document.getElementById('f1-desc').innerText = d.f1D;
+        document.getElementById('f2-title').innerText = d.f2T; document.getElementById('f2-desc').innerText = d.f2D;
+        document.getElementById('f3-title').innerText = d.f3T; document.getElementById('f3-desc').innerText = d.f3D;
+        document.getElementById('f4-title').innerText = d.f4T; document.getElementById('f4-desc').innerText = d.f4D;
+        document.getElementById('f5-title').innerText = d.f5T; document.getElementById('f5-desc').innerText = d.f5D;
+        document.getElementById('f6-title').innerText = d.f6T; document.getElementById('f6-desc').innerText = d.f6D;
+
+        document.getElementById('tg-title').innerText = d.tgTitle;
+        document.getElementById('tg-desc').innerText = d.tgDesc;
+        document.getElementById('t-group').innerText = d.group;
+        document.getElementById('t-footer').innerText = d.footer;
+    }
+</script>
+
+</body>
+</html>
